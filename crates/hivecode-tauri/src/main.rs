@@ -6,13 +6,19 @@
 use hivecode_core::state::AppState;
 use hivecode_providers::registry::ProviderRegistry;
 use hivecode_security::checker::DefaultPermissionChecker;
+use hivecode_tauri::agent_commands::*;
+use hivecode_tauri::auth_commands::*;
 use hivecode_tauri::commands::*;
 use hivecode_tauri::compact_commands::*;
+use hivecode_tauri::context_commands::*;
 use hivecode_tauri::history_commands::*;
 use hivecode_tauri::image_commands::*;
 use hivecode_tauri::memory_commands::*;
 use hivecode_tauri::notification_commands::*;
+use hivecode_tauri::plan_commands::*;
+use hivecode_tauri::plugin_commands::*;
 use hivecode_tauri::state::TauriAppState;
+use hivecode_tauri::update_commands::*;
 use hivecode_tools::registry::ToolRegistry;
 use std::sync::Arc;
 use tauri::Manager;
@@ -85,6 +91,7 @@ pub fn run() {
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![
+            // Core commands
             send_message,
             get_conversation,
             list_providers,
@@ -95,6 +102,7 @@ pub fn run() {
             approve_permission,
             open_project,
             get_system_info,
+            // Session history
             list_sessions,
             load_session,
             delete_session,
@@ -102,16 +110,73 @@ pub fn run() {
             new_session,
             search_sessions,
             save_current_conversation,
+            // Authentication
+            list_auth_profiles,
+            add_api_key_profile,
+            remove_auth_profile,
+            set_default_profile,
+            start_oauth_login,
+            complete_oauth_login,
+            add_chatgpt_session,
+            test_auth_profile,
+            get_chatgpt_login_instructions,
+            // Memory
             list_memories,
             add_memory,
             delete_memory,
             search_memories,
             update_memory,
+            // Conversation compaction
             compact_conversation,
             get_compact_status,
+            // Image & PDF
             process_image,
             get_image_info,
+            // Notifications
             send_notification,
+            // Agent management
+            spawn_agent,
+            list_agents,
+            get_agent,
+            cancel_agent,
+            get_agent_output,
+            list_agents_by_type,
+            complete_agent,
+            get_running_agents_count,
+            // Plan mode
+            enter_plan_mode,
+            exit_plan_mode,
+            add_plan_step,
+            update_plan_step,
+            get_plan,
+            is_plan_mode_active,
+            cancel_plan,
+            get_plan_steps,
+            // Context & cost tracking
+            record_token_usage,
+            get_token_usage,
+            get_cost_summary,
+            estimate_cost,
+            get_remaining_context,
+            should_summarize_context,
+            reset_session_usage,
+            register_model,
+            get_registered_models,
+            get_model_limit,
+            is_context_critical,
+            // Plugin management
+            list_plugins,
+            install_plugin,
+            uninstall_plugin,
+            enable_plugin,
+            disable_plugin,
+            search_plugins,
+            toggle_plugin_pinned,
+            // Auto-updates
+            check_for_updates,
+            download_update,
+            apply_update,
+            get_update_status,
         ])
         .build(tauri::generate_context!())
         .expect("error while building tauri application")
