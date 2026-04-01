@@ -15,6 +15,9 @@ export const Header: React.FC = () => {
   const sidebarOpen = useAppStore((state) => state.sidebarOpen);
   const toggleSidebar = useAppStore((state) => state.toggleSidebar);
   const toggleSettings = useAppStore((state) => state.toggleSettings);
+  const isOnline = useAppStore((state) => state.isOnline);
+  const isDegraded = useAppStore((state) => state.isDegraded);
+  const usingLocalModel = useAppStore((state) => state.usingLocalModel);
   const { theme, toggleTheme } = useTheme();
 
   const getModelDisplayName = (model: string) => {
@@ -52,20 +55,22 @@ export const Header: React.FC = () => {
         {/* Offline Indicator */}
         <div className="hidden sm:block flex-shrink-0">
           <OfflineIndicator
-            isOnline={true}
-            isDegraded={false}
-            usingLocalModel={false}
+            isOnline={isOnline}
+            isDegraded={isDegraded}
+            usingLocalModel={usingLocalModel}
           />
         </div>
 
         {/* Right Section - Actions */}
         <div className="flex items-center gap-2 flex-shrink-0">
           {/* Model Chip */}
-          <div className="hidden sm:flex px-3 py-1.5 rounded-full bg-hive-bg-light dark:bg-hive-surface text-sm font-medium text-slate-900 dark:text-white border border-hive-border-light dark:border-hive-cyan">
-            <span className="text-xs text-slate-600 dark:text-slate-400">
+          <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-hive-bg-light dark:bg-hive-surface text-sm font-medium text-slate-900 dark:text-white border border-hive-border-light dark:border-hive-border" style={{ borderColor: "rgba(62, 186, 244, 0.3)" }}>
+            <div className="w-2 h-2 rounded-full bg-hive-green" title="Connected" />
+            <span className="text-xs text-slate-500 dark:text-slate-400">
               {currentProvider}
             </span>
-            <span className="ml-2">{getModelDisplayName(currentModel)}</span>
+            <span className="text-xs text-slate-300 dark:text-slate-600">/</span>
+            <span className="text-xs font-semibold">{getModelDisplayName(currentModel)}</span>
           </div>
 
           {/* Memory Button */}

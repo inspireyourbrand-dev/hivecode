@@ -18,6 +18,11 @@ interface AppState {
     timestamp: string;
   }>;
 
+  // Connectivity state
+  isOnline: boolean;
+  isDegraded: boolean;
+  usingLocalModel: boolean;
+
   setProviders: (providers: ProviderInfo[]) => void;
   switchModel: (provider: string, model: string) => void;
   setTools: (tools: ToolInfo[]) => void;
@@ -33,6 +38,7 @@ interface AppState {
     timestamp: string;
   }) => void;
   removePermissionRequest: (id: string) => void;
+  setOnlineStatus: (isOnline: boolean, isDegraded?: boolean, usingLocalModel?: boolean) => void;
 }
 
 export const useAppStore = create<AppState>((set) => ({
@@ -46,6 +52,9 @@ export const useAppStore = create<AppState>((set) => ({
   settingsOpen: false,
   authPanelOpen: false,
   permissionRequests: [],
+  isOnline: true,
+  isDegraded: false,
+  usingLocalModel: false,
 
   setProviders: (providers: ProviderInfo[]) => {
     set({ providers });
@@ -106,5 +115,9 @@ export const useAppStore = create<AppState>((set) => ({
     set((state) => ({
       permissionRequests: state.permissionRequests.filter((r) => r.id !== id),
     }));
+  },
+
+  setOnlineStatus: (isOnline: boolean, isDegraded = false, usingLocalModel = false) => {
+    set({ isOnline, isDegraded, usingLocalModel });
   },
 }));

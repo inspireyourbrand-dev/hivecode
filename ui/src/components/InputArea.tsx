@@ -1,10 +1,14 @@
 import React, { useRef, useEffect, useState } from "react";
 import { useChatStore } from "@/stores/chatStore";
-import { useAppStore } from "@/stores/appStore";
 import { sendMessage } from "@/lib/tauri";
 import { Send, Paperclip } from "lucide-react";
 
-export const InputArea: React.FC = () => {
+interface InputAreaProps {
+  quickPrompt?: string;
+  onQuickPromptUsed?: () => void;
+}
+
+export const InputArea: React.FC<InputAreaProps> = ({ quickPrompt = "", onQuickPromptUsed }) => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [input, setInput] = useState("");
@@ -13,6 +17,16 @@ export const InputArea: React.FC = () => {
   const setChatStreaming = useChatStore((state) => state.setIsStreaming);
   const appendStreamDelta = useChatStore((state) => state.appendStreamDelta);
   const completeStream = useChatStore((state) => state.completeStream);
+
+  // Handle quick prompt from welcome screen
+  useEffect(() => {
+    if (quickPrompt) {
+      setInput(quickPrompt);
+      onQuickPromptUsed?.();
+      // Focus textarea for better UX
+      setTimeout(() => textareaRef.current?.focus(), 0);
+    }
+  }, [quickPrompt, onQuickPromptUsed]);
 
   const autoResizeTextarea = () => {
     const textarea = textareaRef.current;
@@ -66,9 +80,6 @@ export const InputArea: React.FC = () => {
     }
   };
 
-  const characterCount = input.length;
-  const lineCount = input.split("\n").length;
-
   return (
     <div className="flex flex-col gap-3">
       <div className="relative">
@@ -77,10 +88,10 @@ export const InputArea: React.FC = () => {
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={handleKeyDown}
-          placeholder="Ask me to write code, fix bugs, or explain concepts... (Ctrl+Enter to send)"
+          placeholder="Ask anything... code, debug, refactor, explain"
           disabled={isStreaming}
           rows={1}
-          className="input-base max-h-48 resize-none pr-12"
+          className="input-base max-h-48 resize-none pl-12 pr-12"
         />
 
         <button
@@ -110,12 +121,15 @@ export const InputArea: React.FC = () => {
       </div>
 
       <div className="flex justify-between items-center text-xs text-slate-500 dark:text-slate-400">
-        <div>
-          {characterCount} characters • {lineCount} line{lineCount !== 1 ? "s" : ""}
+        <div className="flex items-center gap-2">
+          <kbd className="px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-700 text-[10px] font-mono">
+            {navigator.platform?.includes("Mac") ? "⌘" : "Ctrl"}+↵
+          </kbd>
+          <span>to send</span>
         </div>
         <div>
           {isStreaming && (
-            <span className="text-hive-cyan">Receiving response...</span>
+            <span className="text-hive-cyan animate-pulse">Generating...</span>
           )}
         </div>
       </div>

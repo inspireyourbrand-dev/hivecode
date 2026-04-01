@@ -287,3 +287,39 @@
 .gradient-text {
   @apply bg-gradient-to-r from-hive-cyan to-hive-magenta bg-clip-text text-transparent;
 }
+
+/* Pulse-dot animation for streaming indicator */
+@keyframes pulse-dot {
+  0%, 100% { opacity: 0.3; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.4); }
+}
+
+.animate-pulse-dot {
+  animation: pulse-dot 1.2s ease-in-out infinite;
+}
+
+/* Fade-in animation for welcome screen */
+@keyframes fade-in-up {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up 0.5s ease-out;
+}
+
+/* Neon hover glow for interactive cards */
+.neon-card {
+  transition: box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+.neon-card:hover {
+  border-color: rgba(62, 186, 244, 0.8);
+  box-shadow: inset 0 0 20px rgba(62, 186, 244, 0.1), 0 0 20px rgba(62, 186, 244, 0.3);
+}
+
+/* Keyboard shortcut badge */
+kbd {
+  font-family: "JetBrains Mono", monospace;
+  border: 1px solid rgba(62, 186, 244, 0.2);
+}

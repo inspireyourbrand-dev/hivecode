@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { useAppStore } from "@/stores/appStore";
 import { listProviders, listTools } from "@/lib/tauri";
 import { ModelSelector } from "./ModelSelector";
-import { ChevronDown, FolderOpen, Zap, X } from "lucide-react";
+import { ChevronDown, FolderOpen, Zap, X, MessageSquarePlus, History, Cloud } from "lucide-react";
 import { useState } from "react";
 
 export const Sidebar: React.FC = () => {
@@ -49,8 +49,19 @@ export const Sidebar: React.FC = () => {
     <div className="flex flex-col h-full">
       {/* Logo */}
       <div className="px-4 py-4 border-b border-hive-border-light dark:border-hive-border">
-        <div className="flex items-center gap-2">
-          <span className="text-2xl">🐝</span>
+        <div className="flex items-center gap-3">
+          <svg width="28" height="28" viewBox="0 0 80 80" className="flex-shrink-0" style={{ filter: "drop-shadow(0 0 6px rgba(62, 186, 244, 0.5))" }}>
+            <defs>
+              <linearGradient id="sidebarHexGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="#3ebaf4" />
+                <stop offset="100%" stopColor="#df30ff" />
+              </linearGradient>
+            </defs>
+            <path d="M40 10 L65 22.5 L65 57.5 L40 70 L15 57.5 L15 22.5 Z" fill="none" stroke="url(#sidebarHexGrad)" strokeWidth="3" />
+            <line x1="28" y1="28" x2="28" y2="52" stroke="url(#sidebarHexGrad)" strokeWidth="3" strokeLinecap="round" />
+            <line x1="52" y1="28" x2="52" y2="52" stroke="url(#sidebarHexGrad)" strokeWidth="3" strokeLinecap="round" />
+            <line x1="28" y1="40" x2="52" y2="40" stroke="url(#sidebarHexGrad)" strokeWidth="3" strokeLinecap="round" />
+          </svg>
           <span className="font-bold text-lg text-slate-900 dark:text-white">
             Hive<span className="text-hive-cyan">Code</span>
           </span>
@@ -159,7 +170,10 @@ export const Sidebar: React.FC = () => {
             onClick={() => toggleSection("providers")}
             className="w-full flex items-center justify-between px-2 py-2 text-sm font-semibold text-slate-900 dark:text-white hover:bg-hive-bg-light dark:hover:bg-hive-surface rounded transition-colors"
           >
-            <span>Providers</span>
+            <div className="flex items-center gap-2">
+              <Cloud className="w-4 h-4" />
+              Providers
+            </div>
             <ChevronDown
               className={`w-4 h-4 transition-transform ${
                 expandedSections.has("providers") ? "rotate-180" : ""
@@ -197,10 +211,14 @@ export const Sidebar: React.FC = () => {
       </div>
 
       {/* Footer */}
-      <div className="px-4 py-4 border-t border-hive-border-light dark:border-hive-border">
-        <button className="w-full btn-secondary text-sm">
-          + New Chat
+      <div className="px-4 py-4 border-t border-hive-border-light dark:border-hive-border space-y-2">
+        <button className="w-full btn-primary text-sm flex items-center justify-center gap-2">
+          <MessageSquarePlus className="w-4 h-4" />
+          New Chat
         </button>
+        <div className="text-[10px] text-center text-slate-500 dark:text-slate-600">
+          v0.1.0 &middot; HivePowered
+        </div>
       </div>
     </div>
   );

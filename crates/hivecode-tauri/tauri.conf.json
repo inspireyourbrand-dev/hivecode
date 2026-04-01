@@ -26,7 +26,7 @@
       }
     ],
     "security": {
-      "csp": "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; connect-src 'self' http://localhost:* https://*.anthropic.com https://api.openai.com https://*.ollama.ai http://localhost:11434 http://localhost:1234 ws://localhost:* wss://*; font-src 'self' data:"
+      "csp": "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: blob: https:; connect-src 'self' http://localhost:* https://*.anthropic.com https://api.openai.com https://*.ollama.ai http://localhost:11434 http://localhost:1234 ws://localhost:* wss://*; font-src 'self' data: https://fonts.googleapis.com https://fonts.gstatic.com"
     }
   },
   "bundle": {
@@ -56,8 +56,6 @@
     "nsis": {
       "displayLanguageSelector": false,
       "installerIcon": "icons/icon.ico",
-      "headerImage": "icons/nsis-header.bmp",
-      "sidebarImage": "icons/nsis-sidebar.bmp",
       "installMode": "currentUser",
       "languages": ["English"],
       "template": null
