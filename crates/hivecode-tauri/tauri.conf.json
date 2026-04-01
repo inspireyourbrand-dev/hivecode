@@ -64,7 +64,7 @@
         "depends": ["libwebkit2gtk-4.1-0", "libgtk-3-0"],
         "section": "devel"
       },
-      "appImage": {
+      "appimage": {
         "bundleMediaFramework": true
       }
     },
