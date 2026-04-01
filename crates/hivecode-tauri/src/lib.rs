@@ -18,6 +18,14 @@ pub mod query_engine;
 pub mod state;
 pub mod plugin_commands;
 pub mod update_commands;
+pub mod hooks_commands;
+pub mod branch_commands;
+pub mod thinking_commands;
+pub mod offline_commands;
+pub mod project_commands;
+pub mod replay_commands;
+pub mod cost_optimizer_commands;
+pub mod diff_commands;
 
 pub use agent_commands::*;
 pub use auth_commands::*;

@@ -16,10 +16,14 @@ pub mod config_tool;
 pub mod diff_tool;
 pub mod git_tool;
 pub mod lsp_tool;
+pub mod parallel;
 
 pub use traits::{Tool, ToolContext, ToolResult};
 pub use registry::ToolRegistry;
 pub use error::ToolError;
+pub use parallel::{
+    ParallelExecutor, ToolCall, ToolCallResult, ParallelExecutionReport, ExecutionMode,
+};
 
 use std::sync::Arc;
 use hivecode_security::PermissionChecker;

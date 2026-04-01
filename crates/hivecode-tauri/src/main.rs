@@ -19,6 +19,14 @@ use hivecode_tauri::plan_commands::*;
 use hivecode_tauri::plugin_commands::*;
 use hivecode_tauri::state::TauriAppState;
 use hivecode_tauri::update_commands::*;
+use hivecode_tauri::hooks_commands::*;
+use hivecode_tauri::branch_commands::*;
+use hivecode_tauri::thinking_commands::*;
+use hivecode_tauri::offline_commands::*;
+use hivecode_tauri::project_commands::*;
+use hivecode_tauri::replay_commands::*;
+use hivecode_tauri::cost_optimizer_commands::*;
+use hivecode_tauri::diff_commands::*;
 use hivecode_tools::registry::ToolRegistry;
 use std::sync::Arc;
 use tauri::Manager;
@@ -177,6 +185,44 @@ pub fn run() {
             download_update,
             apply_update,
             get_update_status,
+            // Hooks
+            list_hooks,
+            create_hook,
+            delete_hook,
+            toggle_hook,
+            get_hook_log,
+            // Branches
+            fork_conversation,
+            switch_branch,
+            list_branches,
+            delete_branch,
+            compare_branches,
+            // Thinking
+            get_thinking_session,
+            set_thinking_config,
+            // Offline
+            get_offline_status,
+            force_connectivity_check,
+            set_offline_config,
+            // Project instructions
+            load_project_instructions,
+            save_project_instructions,
+            get_project_instructions_template,
+            // Session replay
+            start_recording,
+            stop_recording,
+            list_recordings,
+            load_recording,
+            delete_recording,
+            export_recording,
+            // Cost optimizer
+            get_cost_analysis,
+            get_cost_breakdown,
+            get_daily_cost_trend,
+            // Diff tracking
+            capture_file_before,
+            capture_file_after,
+            get_pending_diffs,
         ])
         .build(tauri::generate_context!())
         .expect("error while building tauri application")

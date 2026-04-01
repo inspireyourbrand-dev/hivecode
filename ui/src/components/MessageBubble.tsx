@@ -1,16 +1,27 @@
 import React from "react";
 import { Message, ContentBlock } from "@/lib/types";
-import { Copy, Check, AlertCircle, CheckCircle } from "lucide-react";
+import { Copy, Check, AlertCircle, CheckCircle, GitBranch } from "lucide-react";
 import Markdown from "react-markdown";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { atomDark } from "react-syntax-highlighter/dist/esm/styles/prism";
+import { ThinkingPanel } from "./ThinkingPanel";
+import { DiffView } from "./DiffView";
 
 interface MessageBubbleProps {
   message: Message;
+  thinking?: string;
+  isThinking?: boolean;
+  onForkBranch?: () => void;
 }
 
-export const MessageBubble: React.FC<MessageBubbleProps> = ({ message }) => {
+export const MessageBubble: React.FC<MessageBubbleProps> = ({
+  message,
+  thinking,
+  isThinking = false,
+  onForkBranch,
+}) => {
   const [copiedId, setCopiedId] = React.useState<string | null>(null);
+  const [showForkButton, setShowForkButton] = React.useState(false);
 
   const copyToClipboard = (text: string, id: string) => {
     navigator.clipboard.writeText(text);
@@ -214,14 +225,36 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({ message }) => {
     message.role === "user" ? "justify-end" : "justify-start";
 
   return (
-    <div className={`flex ${containerClass} mb-4 animate-slide-in`}>
+    <div
+      className={`flex ${containerClass} mb-4 animate-slide-in group`}
+      onMouseEnter={() => message.role === "assistant" && setShowForkButton(true)}
+      onMouseLeave={() => setShowForkButton(false)}
+    >
       <div className={baseClasses}>
+        {message.role === "assistant" && thinking && (
+          <ThinkingPanel
+            thinking={thinking}
+            isStreaming={isThinking}
+            thinkingType="reasoning"
+          />
+        )}
         {renderContent(message.content)}
-        <div className="text-xs opacity-70 mt-2">
-          {new Date(message.timestamp).toLocaleTimeString([], {
-            hour: "2-digit",
-            minute: "2-digit",
-          })}
+        <div className="text-xs opacity-70 mt-2 flex items-center justify-between">
+          <span>
+            {new Date(message.timestamp).toLocaleTimeString([], {
+              hour: "2-digit",
+              minute: "2-digit",
+            })}
+          </span>
+          {message.role === "assistant" && showForkButton && (
+            <button
+              onClick={onForkBranch}
+              className="opacity-0 group-hover:opacity-100 transition-opacity p-1.5 rounded hover:bg-hive-border text-hive-magenta"
+              title="Fork conversation here"
+            >
+              <GitBranch className="w-3 h-3" />
+            </button>
+          )}
         </div>
       </div>
     </div>

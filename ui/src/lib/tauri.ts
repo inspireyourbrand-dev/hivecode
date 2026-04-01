@@ -305,3 +305,371 @@ export async function searchMemories(query: string): Promise<MemoryEntry[]> {
   // Mock response for development
   return [];
 }
+
+// Thinking Management
+export interface ThinkingSession {
+  id: string;
+  thinking: string;
+  tokens: number;
+  timeMs: number;
+  type: "reasoning" | "planning" | "analysis";
+}
+
+export async function getThinkingSession(sessionId: string): Promise<ThinkingSession | null> {
+  if (TAURI_AVAILABLE) {
+    return invoke("get_thinking_session", { sessionId });
+  }
+  return null;
+}
+
+export async function setThinkingConfig(config: Record<string, unknown>): Promise<void> {
+  if (TAURI_AVAILABLE) {
+    return invoke("set_thinking_config", { config });
+  }
+}
+
+// Hooks Management
+export interface Hook {
+  id: string;
+  name: string;
+  type: "pre" | "post" | "error";
+  trigger: string;
+  action: string;
+  enabled: boolean;
+  priority?: number;
+}
+
+export async function listHooks(): Promise<Hook[]> {
+  if (TAURI_AVAILABLE) {
+    return invoke("list_hooks");
+  }
+  return [];
+}
+
+export async function createHook(hook: Omit<Hook, "id">): Promise<Hook> {
+  if (TAURI_AVAILABLE) {
+    return invoke("create_hook", { hook });
+  }
+  return { ...hook, id: `hook-${Date.now()}` };
+}
+
+export async function deleteHook(hookId: string): Promise<void> {
+  if (TAURI_AVAILABLE) {
+    return invoke("delete_hook", { hookId });
+  }
+}
+
+export async function toggleHook(hookId: string, enabled: boolean): Promise<void> {
+  if (TAURI_AVAILABLE) {
+    return invoke("toggle_hook", { hookId, enabled });
+  }
+}
+
+export interface HookLog {
+  timestamp: string;
+  hookId: string;
+  success: boolean;
+  message: string;
+}
+
+export async function getHookLog(hookId?: string, limit?: number): Promise<HookLog[]> {
+  if (TAURI_AVAILABLE) {
+    return invoke("get_hook_log", { hookId, limit });
+  }
+  return [];
+}
+
+// Branch Management
+export interface ConversationBranch {
+  id: string;
+  name: string;
+  parentId?: string;
+  messageCount: number;
+  cost: number;
+  model: string;
+  createdAt: string;
+  isCurrent?: boolean;
+}
+
+export async function forkConversation(fromId: string, name?: string): Promise<ConversationBranch> {
+  if (TAURI_AVAILABLE) {
+    return invoke("fork_conversation", { fromId, name });
+  }
+  return {
+    id: `branch-${Date.now()}`,
+    name: name || "New Branch",
+    parentId: fromId,
+    messageCount: 0,
+    cost: 0,
+    model: "current",
+    createdAt: new Date().toISOString(),
+  };
+}
+
+export async function switchBranch(branchId: string): Promise<void> {
+  if (TAURI_AVAILABLE) {
+    return invoke("switch_branch", { branchId });
+  }
+}
+
+export async function listBranches(): Promise<ConversationBranch[]> {
+  if (TAURI_AVAILABLE) {
+    return invoke("list_branches");
+  }
+  return [];
+}
+
+export async function deleteBranch(branchId: string): Promise<void> {
+  if (TAURI_AVAILABLE) {
+    return invoke("delete_branch", { branchId });
+  }
+}
+
+export async function compareBranches(
+  branchId1: string,
+  branchId2: string
+): Promise<{ branch1: ConversationBranch; branch2: ConversationBranch; diff: string }> {
+  if (TAURI_AVAILABLE) {
+    return invoke("compare_branches", { branchId1, branchId2 });
+  }
+  return {
+    branch1: {} as ConversationBranch,
+    branch2: {} as ConversationBranch,
+    diff: "",
+  };
+}
+
+// Offline Management
+export interface OfflineStatus {
+  isOnline: boolean;
+  isDegraded: boolean;
+  usingLocalModel: boolean;
+  lastCheckTime: string;
+}
+
+export async function getOfflineStatus(): Promise<OfflineStatus> {
+  if (TAURI_AVAILABLE) {
+    return invoke("get_offline_status");
+  }
+  return {
+    isOnline: true,
+    isDegraded: false,
+    usingLocalModel: false,
+    lastCheckTime: new Date().toISOString(),
+  };
+}
+
+export async function forceConnectivityCheck(): Promise<OfflineStatus> {
+  if (TAURI_AVAILABLE) {
+    return invoke("force_connectivity_check");
+  }
+  return {
+    isOnline: true,
+    isDegraded: false,
+    usingLocalModel: false,
+    lastCheckTime: new Date().toISOString(),
+  };
+}
+
+export async function setOfflineConfig(config: Record<string, unknown>): Promise<void> {
+  if (TAURI_AVAILABLE) {
+    return invoke("set_offline_config", { config });
+  }
+}
+
+// Project Instructions
+export async function loadProjectInstructions(projectPath: string): Promise<string> {
+  if (TAURI_AVAILABLE) {
+    return invoke("load_project_instructions", { projectPath });
+  }
+  return "";
+}
+
+export async function saveProjectInstructions(
+  projectPath: string,
+  content: string
+): Promise<void> {
+  if (TAURI_AVAILABLE) {
+    return invoke("save_project_instructions", { projectPath, content });
+  }
+}
+
+export async function getProjectInstructionsTemplate(): Promise<string> {
+  if (TAURI_AVAILABLE) {
+    return invoke("get_project_instructions_template");
+  }
+  return `# HiveCode Instructions
+
+## Instructions
+Describe your project context and goals here.
+
+## Tools
+List the tools and capabilities needed:
+- bash: For running shell commands
+- file_operations: For reading/writing files
+
+## Files
+Specify file restrictions and patterns:
+- Include: src/**, tests/**
+- Exclude: node_modules/**, .git/**
+
+## Model Preferences
+Specify preferred models and settings.`;
+}
+
+// Session Replay
+export interface SessionRecording {
+  id: string;
+  name: string;
+  createdAt: string;
+  events: Record<string, unknown>[];
+  duration: number;
+}
+
+export async function startRecording(): Promise<string> {
+  if (TAURI_AVAILABLE) {
+    return invoke("start_recording");
+  }
+  return `recording-${Date.now()}`;
+}
+
+export async function stopRecording(): Promise<SessionRecording> {
+  if (TAURI_AVAILABLE) {
+    return invoke("stop_recording");
+  }
+  return {
+    id: "",
+    name: "",
+    createdAt: new Date().toISOString(),
+    events: [],
+    duration: 0,
+  };
+}
+
+export async function listRecordings(): Promise<SessionRecording[]> {
+  if (TAURI_AVAILABLE) {
+    return invoke("list_recordings");
+  }
+  return [];
+}
+
+export async function loadRecording(recordingId: string): Promise<SessionRecording> {
+  if (TAURI_AVAILABLE) {
+    return invoke("load_recording", { recordingId });
+  }
+  return {
+    id: recordingId,
+    name: "",
+    createdAt: new Date().toISOString(),
+    events: [],
+    duration: 0,
+  };
+}
+
+export async function deleteRecording(recordingId: string): Promise<void> {
+  if (TAURI_AVAILABLE) {
+    return invoke("delete_recording", { recordingId });
+  }
+}
+
+export async function exportRecording(
+  recordingId: string,
+  format: "markdown" | "json"
+): Promise<string> {
+  if (TAURI_AVAILABLE) {
+    return invoke("export_recording", { recordingId, format });
+  }
+  return "";
+}
+
+// Cost Optimizer
+export interface CostAnalysis {
+  sessionCost: number;
+  breakdown: Array<{
+    model: string;
+    cost: number;
+    percentage: number;
+    tokenCount: number;
+  }>;
+  recommendations: Array<{
+    id: string;
+    title: string;
+    description: string;
+    savings: number;
+    difficulty: "Easy" | "Medium" | "Advanced";
+    action: string;
+  }>;
+}
+
+export async function getCostAnalysis(): Promise<CostAnalysis> {
+  if (TAURI_AVAILABLE) {
+    return invoke("get_cost_analysis");
+  }
+  return {
+    sessionCost: 0,
+    breakdown: [],
+    recommendations: [],
+  };
+}
+
+export async function getCostBreakdown(): Promise<Array<{
+  model: string;
+  cost: number;
+  percentage: number;
+  tokenCount: number;
+}>> {
+  if (TAURI_AVAILABLE) {
+    return invoke("get_cost_breakdown");
+  }
+  return [];
+}
+
+export async function getDailyCostTrend(): Promise<Array<{
+  date: string;
+  cost: number;
+}>> {
+  if (TAURI_AVAILABLE) {
+    return invoke("get_daily_cost_trend");
+  }
+  return [];
+}
+
+// Diff Capture
+export interface FileDiff {
+  filename: string;
+  additions: number;
+  deletions: number;
+  hunks: Array<{
+    id: string;
+    oldStart: number;
+    newStart: number;
+    oldLines: number;
+    newLines: number;
+    lines: Array<{
+      type: "add" | "remove" | "context";
+      content: string;
+      lineNumber?: number;
+    }>;
+  }>;
+}
+
+export async function captureFileBefore(filePath: string): Promise<string> {
+  if (TAURI_AVAILABLE) {
+    return invoke("capture_file_before", { filePath });
+  }
+  return "";
+}
+
+export async function captureFileAfter(filePath: string): Promise<string> {
+  if (TAURI_AVAILABLE) {
+    return invoke("capture_file_after", { filePath });
+  }
+  return "";
+}
+
+export async function getPendingDiffs(): Promise<FileDiff[]> {
+  if (TAURI_AVAILABLE) {
+    return invoke("get_pending_diffs");
+  }
+  return [];
+}

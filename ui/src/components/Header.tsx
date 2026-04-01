@@ -6,6 +6,7 @@ import { CostTracker } from "./CostTracker";
 import { CompactButton } from "./CompactButton";
 import { MemoryPanel } from "./MemoryPanel";
 import { ShortcutHint } from "./KeyboardShortcuts";
+import { OfflineIndicator } from "./OfflineIndicator";
 
 export const Header: React.FC = () => {
   const [memoryPanelOpen, setMemoryPanelOpen] = useState(false);
@@ -46,6 +47,15 @@ export const Header: React.FC = () => {
         <div className="hidden md:flex items-center gap-3 flex-shrink-0">
           <CostTracker compact={true} />
           <CompactButton />
+        </div>
+
+        {/* Offline Indicator */}
+        <div className="hidden sm:block flex-shrink-0">
+          <OfflineIndicator
+            isOnline={true}
+            isDegraded={false}
+            usingLocalModel={false}
+          />
         </div>
 
         {/* Right Section - Actions */}
