@@ -5,6 +5,7 @@ import { Sun, Moon, Settings, Menu, BookMarked } from "lucide-react";
 import { CostTracker } from "./CostTracker";
 import { CompactButton } from "./CompactButton";
 import { MemoryPanel } from "./MemoryPanel";
+import { PanelMenu } from "./PanelMenu";
 import { ShortcutHint } from "./KeyboardShortcuts";
 import { OfflineIndicator } from "./OfflineIndicator";
 
@@ -72,6 +73,9 @@ export const Header: React.FC = () => {
             <span className="text-xs text-slate-300 dark:text-slate-600">/</span>
             <span className="text-xs font-semibold">{getModelDisplayName(currentModel)}</span>
           </div>
+
+          {/* Advanced Panels Menu */}
+          <PanelMenu />
 
           {/* Memory Button */}
           <button

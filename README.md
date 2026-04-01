@@ -118,6 +118,12 @@ HiveCode sits at the intersection of **model freedom**, **local LLM support**, *
 
 **CLI Mode** — Full command-line interface with interactive REPL, streaming output, and 7 subcommands (chat, init, config, auth, plugins, doctor, update).
 
+**Error Recovery** — React error boundary catches crashes gracefully with branded fallback UI, retry/reload options, and full error logging instead of white screens.
+
+**Connectivity Monitoring** — Real-time online/offline detection with browser events, periodic health pings, and automatic state sync. Seamless degraded-mode indicators in the header.
+
+**Command Palette** — Quick access to all advanced panels (Branches, Cost Optimizer, Hooks, Session Replay, Project Config) from a single menu in the header.
+
 **Beautiful UI** — TRON-style neon design with dark/light themes, streaming markdown with syntax highlighting, collapsible tool panels, model selector, and settings management.
 
 ---
@@ -126,9 +132,70 @@ HiveCode sits at the intersection of **model freedom**, **local LLM support**, *
 
 ### Prerequisites
 
-- **Rust** 1.75+ — [Install](https://rustup.rs)
-- **Node.js** 18+ — [Install](https://nodejs.org)
-- **Tauri CLI** — `cargo install tauri-cli --version "^2.0"`
+You need **Rust 1.75+**, **Node.js 18+**, and the **Tauri v2 CLI**. If you don't have them yet, follow the steps for your OS below.
+
+<details>
+<summary><strong>Ubuntu / Debian Linux</strong></summary>
+
+```bash
+# 1. Install system dependencies for Tauri
+sudo apt update
+sudo apt install -y libwebkit2gtk-4.1-dev build-essential curl wget file \
+  libxdo-dev libssl-dev libayatana-appindicator3-dev librsvg2-dev
+
+# 2. Install Rust via rustup
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+source "$HOME/.cargo/env"
+
+# 3. Install Node.js 20 LTS (via NodeSource)
+curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+sudo apt install -y nodejs
+
+# 4. Install Tauri CLI
+cargo install tauri-cli --version "^2.0"
+```
+</details>
+
+<details>
+<summary><strong>macOS</strong></summary>
+
+```bash
+# 1. Install Xcode Command Line Tools (if you haven't already)
+xcode-select --install
+
+# 2. Install Rust via rustup
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+source "$HOME/.cargo/env"
+
+# 3. Install Node.js (via Homebrew)
+brew install node
+
+# 4. Install Tauri CLI
+cargo install tauri-cli --version "^2.0"
+```
+</details>
+
+<details>
+<summary><strong>Windows</strong></summary>
+
+```powershell
+# 1. Install Rust — download and run the installer from https://rustup.rs
+#    (requires Visual Studio C++ Build Tools — the installer will prompt you)
+
+# 2. Install Node.js — download the LTS installer from https://nodejs.org
+
+# 3. Install Tauri CLI (in a new terminal after Rust is installed)
+cargo install tauri-cli --version "^2.0"
+```
+</details>
+
+**Verify everything is installed:**
+
+```bash
+rustc --version    # should show 1.75+
+node --version     # should show v18+
+cargo tauri --version
+```
 
 ### Clone & Build
 
@@ -219,8 +286,9 @@ No API keys? No problem — HiveCode works fully offline with [Ollama](https://o
 | `hivecode-mcp` | 882 | MCP JSON-RPC client with stdio transport, tool/resource discovery |
 | `hivecode-tauri` | 4,214 | 100+ Tauri IPC commands across 16 command modules, events, query engine |
 | `hivecode-cli` | 1,395 | CLI with 7 subcommands, interactive REPL, streaming output |
-| **Frontend** | 6,080 | React 19 + TypeScript + Tailwind CSS + Zustand, 23 components, 3 stores |
-| **Total** | **~40,000** | **7 Rust crates + React frontend** |
+| **Frontend** | 7,200+ | React 19 + TypeScript + Tailwind CSS + Zustand, 26 components, 3 stores, 3 hooks |
+| **Tests** | 1,100+ | 91 integration tests across 3 test suites (config, types, security) |
+| **Total** | **~42,000** | **7 Rust crates + React frontend + test suite** |
 
 ---
 
@@ -248,6 +316,25 @@ HiveCode supports any LLM through a unified provider interface:
 - **ChatGPT Session** — Use your ChatGPT Plus/Team subscription via session token
 
 The key insight: most local tools expose OpenAI-compatible APIs. A single provider implementation covers the entire local ecosystem.
+
+---
+
+## Testing
+
+```bash
+# Run the full test suite
+cargo test
+
+# Run specific test suites
+cargo test --test core_config_test
+cargo test --test core_types_test
+cargo test --test security_test
+
+# Run with output
+cargo test -- --nocapture
+```
+
+91 integration tests covering configuration, core types, and security.
 
 ---
 
@@ -296,9 +383,9 @@ hivecode/
 │   └── hivecode-cli/             # CLI: REPL, 7 subcommands, terminal rendering
 ├── ui/                           # React 19 + TypeScript frontend
 │   ├── src/
-│   │   ├── components/           # 23 components: Chat, Auth, Thinking, DiffView, Branching, etc.
+│   │   ├── components/           # 26 components: Chat, Auth, Thinking, DiffView, Branching, PanelMenu, ErrorBoundary, etc.
 │   │   ├── stores/               # Zustand: chatStore, appStore, notificationStore
-│   │   ├── hooks/                # useAutoScroll, useTheme
+│   │   ├── hooks/                # useAutoScroll, useTheme, useConnectivity
 │   │   └── lib/                  # Tauri IPC bindings, types
 │   ├── package.json
 │   └── vite.config.ts
@@ -308,7 +395,10 @@ hivecode/
 │   ├── macos/                    # .app bundle + DMG + notarization
 │   └── linux/                    # .deb/.AppImage + desktop entry
 ├── scripts/                      # Setup, build, installer scripts
-└── tests/                        # Integration and E2E tests
+└── tests/                        # 91 integration tests: config, types, security
+    ├── core_config_test.rs       # Config loading, defaults, serialization
+    ├── core_types_test.rs        # Message types, content blocks, tokens
+    └── security_test.rs          # Permission checker, path validation, traversal attacks
 ```
 
 ---

@@ -156,13 +156,101 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({
     );
   };
 
+  const extractDiffFromText = (text: string) => {
+    const diffBlockRegex = /```diff\n([\s\S]*?)\n```/g;
+    const matches = [];
+    let match;
+
+    while ((match = diffBlockRegex.exec(text)) !== null) {
+      matches.push(match[1]);
+    }
+
+    return matches;
+  };
+
+  const parseDiffBlocks = (diffs: string[]) => {
+    return diffs.map((diff, idx) => {
+      const lines = diff.split("\n");
+      const fileDiffs: any[] = [];
+      let currentFile: any = null;
+      let currentHunk: any = null;
+
+      for (const line of lines) {
+        if (line.startsWith("diff --git")) {
+          if (currentFile) {
+            fileDiffs.push(currentFile);
+          }
+          const fileMatch = line.match(/b\/(.*?)(?:\s|$)/);
+          currentFile = {
+            filename: fileMatch ? fileMatch[1] : "unknown",
+            additions: 0,
+            deletions: 0,
+            hunks: [],
+          };
+        } else if (line.startsWith("@@")) {
+          if (currentHunk) {
+            currentFile?.hunks.push(currentHunk);
+          }
+          const hunkMatch = line.match(/@@ -(\d+)(?:,(\d+))? \+(\d+)(?:,(\d+))? @@/);
+          currentHunk = {
+            id: `hunk-${idx}-${currentFile?.hunks.length || 0}`,
+            oldStart: parseInt(hunkMatch?.[1] || "0"),
+            newStart: parseInt(hunkMatch?.[3] || "0"),
+            oldLines: parseInt(hunkMatch?.[2] || "1"),
+            newLines: parseInt(hunkMatch?.[4] || "1"),
+            lines: [],
+          };
+        } else if (currentHunk && (line.startsWith("+") || line.startsWith("-") || line.startsWith(" "))) {
+          if (line.startsWith("+") && !line.startsWith("+++")) {
+            currentFile.additions++;
+            currentHunk.lines.push({
+              type: "add",
+              content: line.slice(1),
+              lineNumber: currentHunk.newStart + currentHunk.lines.filter((l: any) => l.type !== "remove").length,
+            });
+          } else if (line.startsWith("-") && !line.startsWith("---")) {
+            currentFile.deletions++;
+            currentHunk.lines.push({
+              type: "remove",
+              content: line.slice(1),
+              lineNumber: currentHunk.oldStart + currentHunk.lines.filter((l: any) => l.type !== "add").length,
+            });
+          } else if (line.startsWith(" ")) {
+            currentHunk.lines.push({
+              type: "context",
+              content: line.slice(1),
+              lineNumber: currentHunk.newStart + currentHunk.lines.length,
+            });
+          }
+        }
+      }
+
+      if (currentHunk && currentFile) {
+        currentFile.hunks.push(currentHunk);
+      }
+      if (currentFile) {
+        fileDiffs.push(currentFile);
+      }
+
+      return fileDiffs;
+    }).flat();
+  };
+
   const renderContent = (blocks: ContentBlock[]) => {
     return blocks.map((block, idx) => {
       switch (block.type) {
         case "text":
+          const text = block.text || "";
+          const diffs = extractDiffFromText(text);
+
           return (
             <div key={idx} className="w-full">
-              {renderTextContent(block.text || "")}
+              {renderTextContent(text)}
+              {diffs.length > 0 && (
+                <div className="mt-4">
+                  <DiffView files={parseDiffBlocks(diffs)} />
+                </div>
+              )}
             </div>
           );
 

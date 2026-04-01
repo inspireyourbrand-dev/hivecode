@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import { useTheme } from "@/hooks/useTheme";
+import { useConnectivity } from "@/hooks/useConnectivity";
 import { useAppStore } from "@/stores/appStore";
 import { Header } from "@/components/Header";
 import { Sidebar } from "@/components/Sidebar";
@@ -7,11 +8,13 @@ import { ChatPanel } from "@/components/ChatPanel";
 import { SettingsPanel } from "@/components/SettingsPanel";
 import { NotificationProvider } from "@/components/NotificationToast";
 import { KeyboardShortcuts } from "@/components/KeyboardShortcuts";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { listProviders, listTools } from "@/lib/tauri";
 import "@/styles/globals.css";
 
 function AppContent() {
   useTheme();
+  useConnectivity();
   const setProviders = useAppStore((state) => state.setProviders);
   const setTools = useAppStore((state) => state.setTools);
 
@@ -58,9 +61,11 @@ function AppContent() {
 
 function App() {
   return (
-    <NotificationProvider>
-      <AppContent />
-    </NotificationProvider>
+    <ErrorBoundary>
+      <NotificationProvider>
+        <AppContent />
+      </NotificationProvider>
+    </ErrorBoundary>
   );
 }
 
