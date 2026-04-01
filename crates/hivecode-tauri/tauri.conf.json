@@ -4,9 +4,9 @@
   "version": "0.1.0",
   "identifier": "ai.hivepowered.hivecode",
   "build": {
-    "beforeDevCommand": "cd ui && npm run dev",
+    "beforeDevCommand": { "script": "npm run dev", "cwd": "../../ui" },
     "devUrl": "http://localhost:5173",
-    "beforeBuildCommand": "cd ui && npm run build",
+    "beforeBuildCommand": { "script": "npm run build", "cwd": "../../ui" },
     "frontendDist": "../../ui/dist"
   },
   "app": {
