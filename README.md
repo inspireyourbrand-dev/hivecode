@@ -84,6 +84,38 @@ HiveCode sits at the intersection of **model freedom**, **local LLM support**, *
 
 **Auto Updates** — Built-in update checker with stable, beta, and nightly channels via GitHub releases.
 
+**Hooks System** — Pre/post execution hooks on any tool. Auto-lint on save, log all bash commands, inject context before tool runs, or block dangerous operations.
+
+**HIVECODE.md** — Per-project configuration file (like CLAUDE.md). Customize behavior, allowed tools, file restrictions, and model preferences for each codebase.
+
+**Model Routing** — Automatically use cheaper models (Haiku, GPT-4o-mini) for simple tasks and premium models (Opus, GPT-4o) for complex reasoning. Saves 60-80% on costs.
+
+**Git-Aware Context** — Automatically discovers relevant files based on git diff, recent changes, and project structure. The AI already knows what you're working on.
+
+**Prompt Caching** — Cache-aware message construction for Anthropic's prompt caching API. Up to 90% cost reduction on repeated context.
+
+**Conversation Branching** — Fork any conversation to explore different approaches without losing the original thread. Compare branches side by side.
+
+**Extended Thinking** — See the AI's chain-of-thought reasoning in a collapsible panel. Streaming display with token tracking.
+
+**Parallel Tool Execution** — When the AI requests multiple independent tools, they run concurrently. Automatic dependency detection for safe parallelism.
+
+**Streaming Diff View** — See file changes as they happen in real-time, with unified or side-by-side diff display.
+
+**Session Replay** — Record and replay coding sessions. Great for teams, onboarding, and learning. Export to Markdown or JSON.
+
+**Cost Optimizer** — "This session cost $4.20. With model routing, it would have been $0.85." Actionable recommendations to reduce spending.
+
+**Offline Mode** — Seamless fallback to local Ollama models when internet is unavailable. Auto-restore when connectivity returns.
+
+**Voice Mode** — Speech-to-text input via OpenAI Whisper, local Whisper, or system speech recognition. Hands-free coding.
+
+**IDE Bridge** — Bidirectional communication with VS Code and JetBrains IDEs. File sync, diagnostics relay, and cursor context.
+
+**Vim Keybindings** — Full vim motions, operators, text objects, and mode transitions for the input area.
+
+**Team Coordination** — Orchestrate multiple AI agents working together with shared memory, task boards, and progress tracking.
+
 **CLI Mode** — Full command-line interface with interactive REPL, streaming output, and 7 subcommands (chat, init, config, auth, plugins, doctor, update).
 
 **Beautiful UI** — TRON-style neon design with dark/light themes, streaming markdown with syntax highlighting, collapsible tool panels, model selector, and settings management.
@@ -92,51 +124,55 @@ HiveCode sits at the intersection of **model freedom**, **local LLM support**, *
 
 ## Quick Start
 
-### One-Command Install (Windows)
+### Prerequisites
 
-Open PowerShell and run:
+- **Rust** 1.75+ — [Install](https://rustup.rs)
+- **Node.js** 18+ — [Install](https://nodejs.org)
+- **Tauri CLI** — `cargo install tauri-cli --version "^2.0"`
 
-```powershell
-cd "$env:USERPROFILE\Documents\Claude\Projects\HiveCode\hivecode"
-powershell -ExecutionPolicy Bypass -File scripts\install-hivecode.ps1
-```
-
-This installs Rust (if needed), Node.js (if needed), Tauri CLI, frontend dependencies, builds the app, and offers to launch it.
-
-### Manual Setup
+### Clone & Build
 
 ```bash
-# 1. Install Rust
-curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+# Clone the repo
+git clone https://github.com/inspireyourbrand-dev/hivecode.git
+cd hivecode
 
-# 2. Install Node.js 18+ from https://nodejs.org
-
-# 3. Install Tauri CLI
-cargo install tauri-cli --version "^2.0"
-
-# 4. Install frontend dependencies
+# Install frontend dependencies
 cd ui && npm install && cd ..
 
-# 5. Run in development mode (hot reload)
+# Run in development mode (hot reload)
 cargo tauri dev
 
-# 6. Build for production (generates installer)
+# Or build for production (generates installer)
 cargo tauri build
 ```
 
-### Configuration
+### One-Command Install (Windows)
 
-Copy the example config and add your API keys:
+If you've already cloned the repo, open PowerShell in the project folder:
 
-```bash
-# Windows
-copy config.example.toml %USERPROFILE%\.hivecode\config.toml
-
-# macOS/Linux
-cp config.example.toml ~/.hivecode/config.toml
+```powershell
+cd hivecode
+powershell -ExecutionPolicy Bypass -File scripts\install-hivecode.ps1
 ```
 
-Edit `~/.hivecode/config.toml`:
+This checks for Rust/Node.js, installs missing dependencies, builds the app, and offers to launch it.
+
+### Configuration
+
+Create the config directory and copy the example config:
+
+```bash
+# macOS/Linux
+mkdir -p ~/.hivecode
+cp config.example.toml ~/.hivecode/config.toml
+
+# Windows (PowerShell)
+New-Item -ItemType Directory -Force -Path "$env:USERPROFILE\.hivecode"
+Copy-Item config.example.toml "$env:USERPROFILE\.hivecode\config.toml"
+```
+
+Edit `~/.hivecode/config.toml` and add your API keys:
 
 ```toml
 [providers.anthropic]
@@ -149,6 +185,8 @@ api_key = "sk-..."
 base_url = "http://localhost:11434"
 default_model = "llama3.3:70b"
 ```
+
+No API keys? No problem — HiveCode works fully offline with [Ollama](https://ollama.com) local models.
 
 ---
 
@@ -172,17 +210,17 @@ default_model = "llama3.3:70b"
 
 ### Crate Structure
 
-| Crate | Purpose |
-|---|---|
-| `hivecode-core` | State, config, conversation, auth, history, memory, context, agents, plans, plugins, updater, image/PDF processing |
-| `hivecode-providers` | LlmProvider trait + OpenAI, Anthropic, Ollama, AWS Bedrock, Google Vertex, Foundry |
-| `hivecode-tools` | Tool trait + 15 tools: bash, file ops, glob, grep, git, LSP, notebooks, agents, config, diff |
-| `hivecode-security` | Permission engine, shell security, path validation, 90+ command patterns |
-| `hivecode-mcp` | MCP JSON-RPC client with stdio transport, tool/resource discovery |
-| `hivecode-tauri` | 27 Tauri IPC commands, events, query engine, state management |
-| `hivecode-cli` | CLI with 7 subcommands, interactive REPL, streaming output |
-| **Frontend** | React 19 + TypeScript + Tailwind CSS + Zustand, 15 components |
-| **Total** | **22,000+ lines across 7 crates + frontend** |
+| Crate | Lines | Purpose |
+|---|---|---|
+| `hivecode-core` | 17,895 | 34 modules: conversation engine, auth, history, memory, hooks, model routing, git context, prompt caching, branching, thinking, offline mode, cost optimizer, streaming diff, session replay, voice, IDE bridge, vim mode, team coordination, keybinding config, and more |
+| `hivecode-providers` | 3,719 | LlmProvider trait + 6 providers: OpenAI, Anthropic, Ollama, AWS Bedrock, Google Vertex, Foundry |
+| `hivecode-tools` | 4,745 | Tool trait + 16 tools: bash, file ops, glob, grep, git, LSP, notebooks, agents, config, diff, parallel execution engine |
+| `hivecode-security` | 896 | Permission engine, shell security, path validation, 90+ command patterns |
+| `hivecode-mcp` | 882 | MCP JSON-RPC client with stdio transport, tool/resource discovery |
+| `hivecode-tauri` | 4,214 | 100+ Tauri IPC commands across 16 command modules, events, query engine |
+| `hivecode-cli` | 1,395 | CLI with 7 subcommands, interactive REPL, streaming output |
+| **Frontend** | 6,080 | React 19 + TypeScript + Tailwind CSS + Zustand, 23 components, 3 stores |
+| **Total** | **~40,000** | **7 Rust crates + React frontend** |
 
 ---
 
@@ -249,16 +287,16 @@ hivecode/
 ├── config.example.toml           # Example configuration
 ├── LICENSE
 ├── crates/
-│   ├── hivecode-core/            # State, config, auth, history, memory, agents, plans, plugins
-│   ├── hivecode-providers/       # LLM providers: OpenAI, Anthropic, Ollama, Bedrock, Vertex, Foundry
-│   ├── hivecode-tools/           # 15 tools: bash, file ops, glob, grep, git, LSP, notebooks
+│   ├── hivecode-core/            # 34 modules: engine, auth, memory, hooks, branching, voice, vim, team, etc.
+│   ├── hivecode-providers/       # 6 LLM providers: OpenAI, Anthropic, Ollama, Bedrock, Vertex, Foundry
+│   ├── hivecode-tools/           # 16 tools + parallel execution engine
 │   ├── hivecode-security/        # Permission engine, shell security, path validation
 │   ├── hivecode-mcp/             # MCP JSON-RPC client
-│   ├── hivecode-tauri/           # Tauri desktop app: 27 IPC commands, events, query engine
-│   └── hivecode-cli/             # CLI mode: REPL, 7 subcommands, terminal rendering
+│   ├── hivecode-tauri/           # 100+ IPC commands across 16 command modules
+│   └── hivecode-cli/             # CLI: REPL, 7 subcommands, terminal rendering
 ├── ui/                           # React 19 + TypeScript frontend
 │   ├── src/
-│   │   ├── components/           # 15 components: Chat, Auth, Memory, Notifications, etc.
+│   │   ├── components/           # 23 components: Chat, Auth, Thinking, DiffView, Branching, etc.
 │   │   ├── stores/               # Zustand: chatStore, appStore, notificationStore
 │   │   ├── hooks/                # useAutoScroll, useTheme
 │   │   └── lib/                  # Tauri IPC bindings, types
