@@ -1,0 +1,97 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nickel-org/tauri/dev/crates/tauri-utils/schema.json",
+  "productName": "HiveCode",
+  "version": "0.1.0",
+  "identifier": "ai.hivepowered.hivecode",
+  "build": {
+    "beforeDevCommand": "cd ../../ui && npm run dev",
+    "devUrl": "http://localhost:5173",
+    "beforeBuildCommand": "cd ../../ui && npm run build",
+    "frontendDist": "../../ui/dist"
+  },
+  "app": {
+    "windows": [
+      {
+        "title": "HiveCode",
+        "width": 1200,
+        "height": 800,
+        "minWidth": 800,
+        "minHeight": 600,
+        "resizable": true,
+        "fullscreen": false,
+        "center": true,
+        "decorations": true,
+        "transparent": false,
+        "titleBarStyle": "Visible"
+      }
+    ],
+    "security": {
+      "csp": "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; connect-src 'self' http://localhost:* https://*.anthropic.com https://api.openai.com https://*.ollama.ai http://localhost:11434 http://localhost:1234 ws://localhost:* wss://*; font-src 'self' data:"
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": "all",
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ],
+    "category": "DeveloperTool",
+    "shortDescription": "Model-agnostic AI coding assistant",
+    "longDescription": "HiveCode is a lightweight, blazing-fast, model-agnostic AI coding assistant. Use any LLM — Claude, GPT, Gemini, or local models via Ollama — in a beautiful native desktop app.",
+    "copyright": "Copyright (c) 2026 HivePowered",
+    "license": "../../LICENSE",
+    "windows": {
+      "certificateThumbprint": null,
+      "digestAlgorithm": "sha256",
+      "timestampUrl": "",
+      "webviewInstallMode": {
+        "type": "downloadBootstrapper"
+      },
+      "allowDowngrades": false
+    },
+    "nsis": {
+      "displayLanguageSelector": false,
+      "installerIcon": "icons/icon.ico",
+      "headerImage": "icons/nsis-header.bmp",
+      "sidebarImage": "icons/nsis-sidebar.bmp",
+      "installMode": "currentUser",
+      "languages": ["English"],
+      "template": null
+    },
+    "deb": {
+      "depends": ["libwebkit2gtk-4.1-0", "libgtk-3-0"],
+      "section": "devel"
+    },
+    "appimage": {
+      "bundleMediaFramework": true
+    },
+    "macOS": {
+      "minimumSystemVersion": "10.15",
+      "frameworks": [],
+      "signingIdentity": null,
+      "entitlements": null
+    }
+  },
+  "plugins": {
+    "shell": {
+      "open": true,
+      "scope": {
+        "allow": [
+          { "name": "open-url", "cmd": "cmd", "args": ["/C", "start", { "validator": "\\S+" }] }
+        ]
+      }
+    },
+    "fs": {
+      "scope": {
+        "allow": ["$HOME/**", "$DOCUMENT/**", "$DESKTOP/**"]
+      }
+    },
+    "notification": {
+      "all": true
+    }
+  }
+}

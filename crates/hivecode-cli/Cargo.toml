@@ -1,0 +1,47 @@
+[package]
+name = "hivecode-cli"
+version = "0.1.0"
+edition = "2021"
+description = "Command-line interface for HiveCode"
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[[bin]]
+name = "hivecode"
+path = "src/main.rs"
+
+[dependencies]
+hivecode-core = { path = "../hivecode-core" }
+hivecode-providers = { path = "../hivecode-providers" }
+hivecode-tools = { path = "../hivecode-tools" }
+hivecode-security = { path = "../hivecode-security" }
+hivecode-mcp = { path = "../hivecode-mcp" }
+
+tokio = { workspace = true }
+clap = { version = "4.5", features = ["derive", "cargo"] }
+serde = { workspace = true }
+serde_json = { workspace = true }
+tracing = { workspace = true }
+tracing-subscriber = { workspace = true }
+
+# Terminal UI
+crossterm = "0.28"
+ratatui = "0.29"
+
+# Additional CLI utilities
+anyhow = { workspace = true }
+thiserror = { workspace = true }
+regex = "1.10"
+colored = "2.1"
+indicatif = "0.17"
+rustyline = "14"
+chrono = { workspace = true }
+async-trait = { workspace = true }
+uuid = { workspace = true }
+dirs = "5"
+toml = "0.8"
+reqwest = { workspace = true }
+
+[dev-dependencies]
+tempfile = "3.8"

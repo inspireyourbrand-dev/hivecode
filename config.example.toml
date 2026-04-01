@@ -1,0 +1,128 @@
+# HiveCode Configuration
+# Copy this file to ~/.hivecode/config.toml and customize
+
+[general]
+theme = "dark"          # "dark" or "light"
+default_provider = "ollama"
+default_model = "llama3.3:70b"
+
+# ─── LLM PROVIDERS ─────────────────────────────────────────────
+
+[providers.anthropic]
+api_key = "${ANTHROPIC_API_KEY}"
+default_model = "claude-sonnet-4-6"
+
+[providers.openai]
+api_key = "${OPENAI_API_KEY}"
+default_model = "gpt-4o"
+
+[providers.ollama]
+base_url = "http://localhost:11434"
+default_model = "llama3.3:70b"
+
+[providers.lm_studio]
+base_url = "http://localhost:1234"
+default_model = "deepseek-coder-v2"
+
+# AWS Bedrock (uses AWS credential chain by default)
+# [providers.bedrock]
+# enabled = true
+# [providers.bedrock.settings]
+# region = "us-east-1"
+# access_key_id = "${AWS_ACCESS_KEY_ID}"
+# secret_access_key = "${AWS_SECRET_ACCESS_KEY}"
+
+# Google Vertex AI
+# [providers.vertex]
+# enabled = true
+# [providers.vertex.settings]
+# project_id = "my-gcp-project"
+# location = "us-central1"
+# credentials_json = "/path/to/service-account.json"
+
+# Anthropic Foundry (custom enterprise endpoint)
+# [providers.foundry]
+# api_key = "${ANTHROPIC_API_KEY}"
+# base_url = "https://my-foundry.anthropic.com"
+
+# Custom OpenAI-compatible endpoint (vLLM, text-generation-inference, etc.)
+# [providers.custom]
+# base_url = "https://my-server.example.com/v1"
+# api_key = "${CUSTOM_API_KEY}"
+# default_model = "codellama-70b"
+
+# ─── TOOLS ──────────────────────────────────────────────────────
+
+[tools]
+bash_timeout = 120      # seconds
+file_read_limit = 2000  # max lines per read
+max_output_size = 65536 # bytes
+
+# ─── PERMISSIONS ────────────────────────────────────────────────
+
+[permissions]
+mode = "ask"            # "ask", "auto", "trust"
+
+# Always allow these commands without asking
+allow_commands = [
+    "ls", "cat", "head", "tail", "wc",
+    "git status", "git log", "git diff",
+    "echo", "pwd", "which", "env",
+    "cargo check", "cargo test",
+    "npm test", "npm run build",
+]
+
+# Always block these commands
+deny_commands = [
+    "rm -rf /",
+    "sudo rm",
+    "curl | bash",
+    "chmod 777",
+]
+
+# Paths that tools can access (relative to project root)
+allow_paths = ["."]
+
+# Sensitive files that require explicit approval
+sensitive_patterns = [
+    ".env*",
+    "*credentials*",
+    "*secret*",
+    "*.pem",
+    "*.key",
+    "*id_rsa*",
+]
+
+# ─── MCP SERVERS ────────────────────────────────────────────────
+
+# [mcp.filesystem]
+# command = "npx"
+# args = ["-y", "@modelcontextprotocol/server-filesystem", "/path/to/allowed/dir"]
+
+# [mcp.github]
+# command = "npx"
+# args = ["-y", "@modelcontextprotocol/server-github"]
+# env = { GITHUB_TOKEN = "${GITHUB_TOKEN}" }
+
+# ─── UI ─────────────────────────────────────────────────────────
+
+[ui]
+font_family = "JetBrains Mono"
+font_size = 14
+show_token_count = true
+show_cost = true
+sidebar_width = 280
+
+# ─── COST TRACKING ─────────────────────────────────────────────
+
+[cost]
+spending_limit = 50.00      # USD per month, 0 = unlimited
+warning_threshold = 0.8     # warn at 80% of limit
+alert_threshold = 0.9       # alert at 90% of limit
+
+# ─── MEMORY ────────────────────────────────────────────────────
+
+[memory]
+enabled = true
+auto_extract = true         # automatically extract memories from conversations
+max_entries = 1000

@@ -1,0 +1,33 @@
+[package]
+name = "hivecode-tauri"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+hivecode-core = { path = "../hivecode-core" }
+hivecode-providers = { path = "../hivecode-providers" }
+hivecode-tools = { path = "../hivecode-tools" }
+hivecode-security = { path = "../hivecode-security" }
+hivecode-mcp = { path = "../hivecode-mcp" }
+tauri = { version = "2", features = ["protocol-asset"] }
+tauri-plugin-shell = "2"
+tauri-plugin-dialog = "2"
+tauri-plugin-fs = "2"
+tauri-plugin-process = "2"
+tauri-plugin-notification = "2"
+tauri-plugin-updater = "2"
+tokio = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+anyhow = { workspace = true }
+tracing = { workspace = true }
+tracing-subscriber = { workspace = true }
+uuid = { workspace = true }
+
+[build-dependencies]
+tauri-build = "2"
+
+[profile.release]
+opt-level = 3
+lto = true
+codegen-units = 1

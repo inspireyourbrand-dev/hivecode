@@ -1,0 +1,55 @@
+# Rust
+/target/
+**/*.rs.bk
+Cargo.lock
+
+# Node
+ui/node_modules/
+ui/dist/
+ui/.vite/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+ehthumbs.db
+
+# Environment
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+
+# Build artifacts
+*.exe
+*.msi
+*.dmg
+*.AppImage
+*.deb
+*.rpm
+*.zip
+*.tar.gz
+
+# Tauri
+crates/hivecode-tauri/gen/
+
+# HiveCode user data (should never be committed)
+auth_profiles.json
+memory.json
+sessions/
+
+# Logs
+*.log
+logs/
+
+# Coverage
+coverage/
+*.lcov

@@ -1,0 +1,11 @@
+[Desktop Entry]
+Name=HiveCode
+Comment=AI-Powered Coding Assistant
+Exec=hivecode %U
+Icon=hivecode
+Type=Application
+Categories=Development;IDE;
+Terminal=false
+MimeType=x-scheme-handler/hivecode;
+StartupWMClass=HiveCode
+Keywords=AI;Code;Assistant;LLM;

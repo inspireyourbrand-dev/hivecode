@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<!-- Bundle Information -->
+	<key>CFBundleName</key>
+	<string>HiveCode</string>
+
+	<key>CFBundleDisplayName</key>
+	<string>HiveCode</string>
+
+	<key>CFBundleIdentifier</key>
+	<string>ai.hivepowered.hivecode</string>
+
+	<!-- Version Information -->
+	<key>CFBundleVersion</key>
+	<string>0.1.0</string>
+
+	<key>CFBundleShortVersionString</key>
+	<string>0.1.0</string>
+
+	<!-- System Requirements -->
+	<key>LSMinimumSystemVersion</key>
+	<string>10.15</string>
+
+	<!-- URL Scheme Support -->
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+
+			<key>CFBundleURLName</key>
+			<string>HiveCode URL Scheme</string>
+
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>hivecode</string>
+			</array>
+		</dict>
+	</array>
+
+	<!-- Copyright Information -->
+	<key>NSHumanReadableCopyright</key>
+	<string>Copyright 2026 HivePowered. All rights reserved.</string>
+
+	<!-- Description -->
+	<key>NSBundleGetInfoString</key>
+	<string>HiveCode - Model-agnostic AI coding assistant for macOS</string>
+
+	<!-- Supported File Types (optional) -->
+	<key>CFBundleDocumentTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>*</string>
+			</array>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>LSTypeIsPackage</key>
+			<false/>
+		</dict>
+	</array>
+
+	<!-- High Resolution Display Support -->
+	<key>NSHighResolutionCapable</key>
+	<true/>
+
+	<!-- App Category -->
+	<key>LSApplicationCategoryType</key>
+	<string>public.app-category.developer-tools</string>
+
+	<!-- Help Book -->
+	<key>CFBundleHelpBookFolder</key>
+	<string>HiveCode Help</string>
+
+	<!-- Scripts Allowed (for compatibility) -->
+	<key>NSAppleScriptEnabled</key>
+	<false/>
+
+</dict>
+</plist>

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<!-- Sandbox Configuration -->
+	<key>com.apple.security.app-sandbox</key>
+	<false/>
+
+	<!-- Network Entitlements -->
+	<key>com.apple.security.network.client</key>
+	<true/>
+	<key>com.apple.security.network.server</key>
+	<true/>
+
+	<!-- File System Access -->
+	<key>com.apple.security.files.user-selected.read-write</key>
+	<true/>
+
+	<!-- Temporary Item Access (for file operations) -->
+	<key>com.apple.security.files.all.read-write</key>
+	<false/>
+
+	<!-- Process Info Access -->
+	<key>com.apple.security.personal-information.addressbook</key>
+	<false/>
+	<key>com.apple.security.personal-information.photoslibrary</key>
+	<false/>
+
+	<!-- Device Access -->
+	<key>com.apple.security.device.camera</key>
+	<false/>
+	<key>com.apple.security.device.microphone</key>
+	<false/>
+
+	<!-- Hardened Runtime -->
+	<key>com.apple.security.cs.allow-jit</key>
+	<true/>
+	<key>com.apple.security.cs.allow-unsigned-executable-memory</key>
+	<true/>
+	<key>com.apple.security.cs.allow-dyld-environment-variables</key>
+	<false/>
+	<key>com.apple.security.cs.disable-library-validation</key>
+	<false/>
+	<key>com.apple.security.cs.allow-executable-page-writes</key>
+	<false/>
+
+	<!-- Capability Delegation -->
+	<key>com.apple.security.application-groups</key>
+	<array/>
+
+	<!-- Debug Entitlements -->
+	<key>get-task-allow</key>
+	<false/>
+
+</dict>
+</plist>

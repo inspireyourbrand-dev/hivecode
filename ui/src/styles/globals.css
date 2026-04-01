@@ -1,0 +1,289 @@
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+
+@layer base {
+  * {
+    @apply transition-colors duration-200;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-hive-bg-light dark:bg-hive-bg text-slate-900 dark:text-white;
+  }
+
+  code {
+    @apply font-mono text-sm;
+  }
+}
+
+/* Scrollbar Styles - Cyan Glow */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-hive-bg-light dark:bg-hive-surface;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply dark:bg-hive-cyan rounded-full;
+  box-shadow: 0 0 8px rgba(62, 186, 244, 0.5);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply dark:bg-hive-cyan;
+  box-shadow: 0 0 12px rgba(62, 186, 244, 0.8);
+}
+
+/* Code Block Styles - Cyan Border Glow */
+.code-block {
+  @apply rounded-lg dark:bg-hive-surface overflow-hidden border border-hive-cyan;
+  box-shadow: 0 0 10px rgba(62, 186, 244, 0.3), inset 0 0 10px rgba(62, 186, 244, 0.1);
+}
+
+.code-block pre {
+  @apply !bg-transparent !m-0 overflow-x-auto;
+}
+
+.code-block code {
+  @apply !text-xs;
+}
+
+.hljs {
+  @apply !bg-transparent !p-4;
+}
+
+/* Markdown Styles */
+.markdown {
+  @apply max-w-none text-inherit;
+}
+
+.markdown h1,
+.markdown h2,
+.markdown h3,
+.markdown h4,
+.markdown h5,
+.markdown h6 {
+  @apply mt-4 mb-2 font-semibold;
+}
+
+.markdown h1 {
+  @apply text-2xl;
+}
+
+.markdown h2 {
+  @apply text-xl;
+}
+
+.markdown h3 {
+  @apply text-lg;
+}
+
+.markdown p {
+  @apply mb-3 leading-relaxed;
+}
+
+.markdown ul,
+.markdown ol {
+  @apply mb-3 ml-4;
+}
+
+.markdown li {
+  @apply mb-1;
+}
+
+/* Markdown Links - Cyan */
+.markdown a {
+  @apply text-hive-cyan hover:text-hive-magenta dark:hover:text-hive-yellow underline;
+}
+
+/* Blockquotes - Cyan Left Border */
+.markdown blockquote {
+  @apply border-l-4 border-hive-cyan pl-4 italic my-3 text-slate-600 dark:text-hive-text-secondary;
+  padding-left: 1rem;
+  border-left-color: #3ebaf4;
+}
+
+/* Inline Code - Cyan Tint */
+.markdown code:not(pre code) {
+  @apply bg-hive-border-light dark:bg-hive-surface px-1.5 py-0.5 rounded text-hive-cyan;
+  border: 1px solid rgba(62, 186, 244, 0.3);
+}
+
+.markdown pre {
+  @apply my-3;
+}
+
+.markdown table {
+  @apply w-full border-collapse;
+}
+
+.markdown th,
+.markdown td {
+  @apply border border-hive-border-light dark:border-hive-border p-2 text-left;
+}
+
+.markdown th {
+  @apply bg-hive-bg-light dark:bg-hive-surface font-semibold;
+}
+
+/* Tool Card Styles */
+.tool-card {
+  @apply rounded-lg border bg-white dark:bg-hive-surface p-4 transition-all;
+  border-color: #1e3a4f;
+}
+
+/* Running State - Cyan Border */
+.tool-card.running {
+  @apply border-hive-cyan;
+  box-shadow: 0 0 10px rgba(62, 186, 244, 0.3);
+}
+
+/* Error State - Red */
+.tool-card.error {
+  @apply border-red-500 bg-red-50 dark:bg-red-950;
+  box-shadow: 0 0 10px rgba(239, 68, 68, 0.3);
+}
+
+/* Success State - Green */
+.tool-card.success {
+  @apply border-hive-green bg-green-50 dark:bg-green-950;
+  box-shadow: 0 0 10px rgba(0, 212, 155, 0.3);
+}
+
+/* Button Styles */
+/* Primary Button - Cyan to Magenta Gradient with Hover Glow */
+.btn-primary {
+  @apply inline-flex items-center justify-center px-4 py-2 text-white font-medium rounded-lg transition-all;
+  background: linear-gradient(135deg, #3ebaf4 0%, #df30ff 100%);
+}
+
+.btn-primary:hover {
+  box-shadow: 0 0 15px rgba(62, 186, 244, 0.6), 0 0 25px rgba(223, 48, 255, 0.3);
+}
+
+/* Secondary Button - Dark with Cyan/Magenta Gradient Border */
+.btn-secondary {
+  @apply inline-flex items-center justify-center px-4 py-2 dark:bg-hive-surface text-white font-medium rounded-lg transition-all border;
+  border-image: linear-gradient(135deg, #3ebaf4, #df30ff) 1;
+  border-width: 1px;
+}
+
+.btn-secondary:hover {
+  box-shadow: 0 0 10px rgba(62, 186, 244, 0.4), 0 0 15px rgba(223, 48, 255, 0.2);
+}
+
+/* Ghost Button */
+.btn-ghost {
+  @apply inline-flex items-center justify-center px-4 py-2 hover:bg-hive-bg-light dark:hover:bg-hive-surface text-slate-900 dark:text-white font-medium rounded-lg transition-colors;
+}
+
+/* Input Styles - Cyan Focus Ring */
+.input-base {
+  @apply w-full px-3 py-2 rounded-lg border bg-white dark:bg-hive-surface text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:border-transparent transition-all;
+  border-color: #1e3a4f;
+}
+
+.input-base:focus {
+  @apply focus:ring-hive-cyan;
+  box-shadow: 0 0 10px rgba(62, 186, 244, 0.3);
+}
+
+.input-base:disabled {
+  @apply opacity-50 cursor-not-allowed;
+}
+
+/* Animations */
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+.animate-shimmer {
+  animation: shimmer 2s infinite;
+  background: linear-gradient(
+    to right,
+    transparent 0%,
+    rgba(62, 186, 244, 0.2) 50%,
+    transparent 100%
+  );
+  background-size: 1000px 100%;
+}
+
+/* Neon Glow Keyframe */
+@keyframes neon-glow {
+  0%, 100% {
+    box-shadow: 0 0 5px rgba(62, 186, 244, 0.5), 0 0 10px rgba(62, 186, 244, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 15px rgba(62, 186, 244, 0.8), 0 0 25px rgba(62, 186, 244, 0.5);
+  }
+}
+
+/* Constellation Background Utility */
+.constellation-bg {
+  background: radial-gradient(circle at 20% 50%, rgba(62, 186, 244, 0.1) 0%, transparent 50%),
+              radial-gradient(circle at 80% 80%, rgba(223, 48, 255, 0.1) 0%, transparent 50%),
+              radial-gradient(circle at 40% 20%, rgba(0, 212, 155, 0.05) 0%, transparent 50%);
+}
+
+/* Message Bubble Styles */
+/* User Message - Cyan to Magenta Gradient */
+.message-bubble-user {
+  @apply ml-auto max-w-2xl text-white rounded-2xl rounded-tr-sm px-4 py-3 break-words;
+  background: linear-gradient(135deg, #3ebaf4 0%, #df30ff 100%);
+}
+
+/* Assistant Message - Dark Surface with Subtle Cyan Border */
+.message-bubble-assistant {
+  @apply mr-auto max-w-4xl dark:bg-hive-surface text-white rounded-2xl rounded-tl-sm px-4 py-3 break-words border;
+  border-color: rgba(62, 186, 244, 0.3);
+  box-shadow: 0 0 8px rgba(62, 186, 244, 0.1);
+}
+
+/* System Message - Dark with Border */
+.message-bubble-system {
+  @apply mx-auto max-w-2xl dark:bg-hive-surface dark:text-hive-text-secondary rounded-lg px-4 py-2 text-sm text-center border;
+  border-color: rgba(62, 186, 244, 0.2);
+}
+
+/* Loading Spinner */
+.spinner {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Copy Button Overlay */
+.copy-button {
+  @apply absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity;
+}
+
+/* Glassmorphism Effect */
+.glass {
+  @apply backdrop-blur-md bg-white/10 dark:bg-black/20;
+}
+
+/* Gradient Text - Cyan to Magenta */
+.gradient-text {
+  @apply bg-gradient-to-r from-hive-cyan to-hive-magenta bg-clip-text text-transparent;
+}
