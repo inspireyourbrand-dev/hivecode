@@ -4,7 +4,7 @@ use anyhow::Result;
 use colored::*;
 use hivecode_core::AppState;
 
-use crate::main::PluginActions;
+use crate::PluginActions;
 
 pub async fn handle_plugin_command(action: PluginActions, _app_state: &AppState) -> Result<()> {
     match action {

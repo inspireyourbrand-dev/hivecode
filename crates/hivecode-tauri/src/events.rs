@@ -98,16 +98,16 @@ pub enum BackendEvent {
 /// Helper to emit events to the Tauri frontend
 pub mod emit {
     use super::*;
-    use tauri::Manager;
+    use tauri::Emitter;
 
     /// Emit an LLM stream event
-    pub fn stream<R: tauri::Runtime>(window: &tauri::Window<R>, event: LlmStreamEvent) {
+    pub fn stream<R: tauri::Runtime>(window: &tauri::WebviewWindow<R>, event: LlmStreamEvent) {
         let _ = window.emit("llm-stream", event);
     }
 
     /// Emit a tool execution event
     pub fn tool_execution<R: tauri::Runtime>(
-        window: &tauri::Window<R>,
+        window: &tauri::WebviewWindow<R>,
         event: ToolExecutionEvent,
     ) {
         let _ = window.emit("tool-execution", event);
@@ -115,7 +115,7 @@ pub mod emit {
 
     /// Emit a permission request event
     pub fn permission_request<R: tauri::Runtime>(
-        window: &tauri::Window<R>,
+        window: &tauri::WebviewWindow<R>,
         event: PermissionRequestEvent,
     ) {
         let _ = window.emit("permission-request", event);
@@ -123,7 +123,7 @@ pub mod emit {
 
     /// Emit a state change event
     pub fn state_change<R: tauri::Runtime>(
-        window: &tauri::Window<R>,
+        window: &tauri::WebviewWindow<R>,
         event: StateChangeEvent,
     ) {
         let _ = window.emit("state-change", event);

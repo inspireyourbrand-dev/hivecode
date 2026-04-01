@@ -1,6 +1,8 @@
 //! Application state management for HiveCode Tauri
 
+use hivecode_core::plugins::PluginManager;
 use hivecode_core::state::AppState;
+use hivecode_core::updater::UpdateManager;
 use hivecode_providers::registry::ProviderRegistry;
 use hivecode_security::checker::PermissionChecker;
 use hivecode_tools::registry::ToolRegistry;
@@ -26,6 +28,12 @@ pub struct TauriAppState {
 
     /// Security permission checker for tool execution
     pub permission_checker: Arc<dyn PermissionChecker>,
+
+    /// Auto-update manager
+    pub update_manager: Arc<UpdateManager>,
+
+    /// Plugin manager
+    pub plugin_manager: Arc<PluginManager>,
 }
 
 impl TauriAppState {
@@ -35,6 +43,8 @@ impl TauriAppState {
         providers: ProviderRegistry,
         tools: ToolRegistry,
         permission_checker: Arc<dyn PermissionChecker>,
+        update_manager: UpdateManager,
+        plugin_manager: PluginManager,
     ) -> Self {
         info!("initializing TauriAppState");
 
@@ -43,6 +53,8 @@ impl TauriAppState {
             providers: Arc::new(providers),
             tools: Arc::new(tools),
             permission_checker,
+            update_manager: Arc::new(update_manager),
+            plugin_manager: Arc::new(plugin_manager),
         }
     }
 

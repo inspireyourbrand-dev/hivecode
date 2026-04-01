@@ -8,12 +8,9 @@ use crate::state::TauriAppState;
 use hivecode_core::types::ProviderInfo;
 use serde::{Deserialize, Serialize};
 use serde_json::{json, Value};
-use std::net::IpAddr;
-use std::str::FromStr;
 use std::sync::Arc;
 use tauri::State;
 use tracing::{debug, info, warn};
-use uuid::Uuid;
 
 /// Information about an available tool
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -47,6 +44,7 @@ pub struct SystemInfo {
 /// which may involve multiple LLM calls and tool executions.
 #[tauri::command]
 pub async fn send_message(
+    app_handle: tauri::AppHandle,
     state: State<'_, TauriAppState>,
     message: String,
 ) -> Result<String, String> {
@@ -56,10 +54,10 @@ pub async fn send_message(
         return Err("message cannot be empty".to_string());
     }
 
-    let app = state.into_inner().clone();
+    let app_state = state.inner().clone();
 
     tokio::task::spawn(async move {
-        if let Err(e) = query_engine::process_message(&app, &Default::default(), message).await {
+        if let Err(e) = query_engine::process_message(&app_state, &app_handle, message).await {
             warn!("error processing message: {}", e);
         }
     });
@@ -255,7 +253,7 @@ pub async fn update_config(
                 .map_err(|e| e.to_string())?;
 
             // Reinitialize the provider
-            reinitialize_provider(state.into_inner(), provider_name, api_key)
+            reinitialize_provider(state.inner(), provider_name, api_key)
                 .await
         }
         _ => Err(format!("unknown configuration key: {}", key)),
@@ -264,7 +262,7 @@ pub async fn update_config(
 
 /// Reinitialize a specific provider with updated configuration
 async fn reinitialize_provider(
-    state: Arc<TauriAppState>,
+    state: &TauriAppState,
     provider_name: &str,
     api_key: &str,
 ) -> Result<(), String> {
@@ -390,13 +388,7 @@ fn get_system_memory_gb() -> u64 {
         }
     }
 
-    // Fallback for other OSes
-    #[cfg(not(target_os = "linux"))]
-    {
-        // Would use system_information crate in production
-        16 // Default guess
-    }
-
+    // Fallback: default estimate when /proc/meminfo unavailable or on non-Linux
     16
 }
 

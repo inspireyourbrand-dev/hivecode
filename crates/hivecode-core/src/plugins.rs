@@ -202,6 +202,20 @@ impl PluginManager {
         Ok(manager)
     }
 
+    /// Create an empty plugin manager without scanning for plugins.
+    ///
+    /// This is a fallback for when the full initialization fails (e.g., home directory
+    /// inaccessible or plugins directory cannot be created).
+    pub fn empty() -> Self {
+        Self {
+            plugins: RwLock::new(HashMap::new()),
+            plugins_dir: PathBuf::from(".hivecode/plugins"),
+            registry_url: "https://plugins.hivepowered.ai/api".to_string(),
+            http_client: reqwest::Client::new(),
+            enabled_plugins: RwLock::new(Vec::new()),
+        }
+    }
+
     /// Get the default plugins directory (~/.hivecode/plugins/)
     pub fn default_plugins_dir() -> Result<PathBuf> {
         let home = dirs::home_dir()

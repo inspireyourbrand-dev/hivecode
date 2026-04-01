@@ -35,6 +35,20 @@ impl AppState {
         }
     }
 
+    /// Create a new application state from a configuration
+    ///
+    /// Initializes session and conversation engine with sensible defaults
+    /// derived from the provided config.
+    pub async fn from_config(config: HiveConfig) -> Result<Self> {
+        let cwd = std::env::current_dir()
+            .map(|p| p.to_string_lossy().to_string())
+            .unwrap_or_else(|_| "/".to_string());
+        let session = AppSessionState::new(&cwd);
+        let conversation = ConversationEngine::new("claude-sonnet-4");
+
+        Ok(Self::new(session, conversation, config).await)
+    }
+
     /// Create a new application state with defaults
     pub async fn default() -> Self {
         let session = AppSessionState::new("/");
@@ -60,9 +74,9 @@ impl AppState {
     }
 
     /// Get the conversation state
-    pub async fn get_conversation_state(&self) -> Result<crate::types::ConversationState> {
+    pub async fn get_conversation_state(&self) -> Result<crate::types::ConversationMetadata> {
         let conversation = self.conversation.read().await;
-        Ok(conversation.state().clone())
+        Ok(conversation.state().metadata())
     }
 
     /// Get all messages in the current conversation

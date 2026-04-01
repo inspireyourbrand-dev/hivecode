@@ -227,7 +227,7 @@ impl LlmProvider for BedrockProvider {
             request.model = self.config.default_model.clone();
         }
 
-        let bedrock_request = BedrockChatRequest::from_chat_request(request)?;
+        let bedrock_request = BedrockChatRequest::from_chat_request(request, false)?;
         let model_id = bedrock_request.model.clone();
         let endpoint = self.get_endpoint(&model_id);
 
@@ -269,7 +269,7 @@ impl LlmProvider for BedrockProvider {
 
         request.stream = true;
 
-        let bedrock_request = BedrockChatRequest::from_chat_request(request)?;
+        let bedrock_request = BedrockChatRequest::from_chat_request(request, true)?;
         let model_id = bedrock_request.model.clone();
         let endpoint = self.get_stream_endpoint(&model_id);
 
@@ -372,7 +372,7 @@ fn is_false(b: &bool) -> bool {
 }
 
 impl BedrockChatRequest {
-    pub fn from_chat_request(req: ChatRequest) -> Result<Self> {
+    pub fn from_chat_request(req: ChatRequest, stream: bool) -> Result<Self> {
         let mut system = None;
         let mut messages = Vec::new();
 

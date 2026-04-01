@@ -4,7 +4,7 @@ use anyhow::Result;
 use colored::*;
 use hivecode_core::AppState;
 
-use crate::main::UpdateActions;
+use crate::UpdateActions;
 
 pub async fn handle_update_command(action: Option<UpdateActions>, _app_state: &AppState) -> Result<()> {
     match action {

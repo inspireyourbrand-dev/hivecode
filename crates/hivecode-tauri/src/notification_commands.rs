@@ -5,7 +5,8 @@
 //! Notifications are delivered via the native notification system through tauri_plugin_notification.
 
 use serde::{Deserialize, Serialize};
-use tauri::{AppHandle, Manager};
+use tauri::AppHandle;
+use tauri_plugin_notification::NotificationExt;
 use tracing::{debug, info, warn};
 
 /// Send a desktop notification to the user
@@ -36,7 +37,8 @@ pub async fn send_notification(
 
     // Use the tauri notification plugin to send the notification
     // The plugin is already initialized in main.rs via tauri_plugin_notification::init()
-    tauri_plugin_notification::Builder::new()
+    app.notification()
+        .builder()
         .title(&title)
         .body(&body)
         .show()

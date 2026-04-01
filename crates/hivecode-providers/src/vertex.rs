@@ -210,7 +210,7 @@ impl LlmProvider for VertexProvider {
             request.model = self.config.default_model.clone();
         }
 
-        let vertex_request = VertexChatRequest::from_chat_request(request)?;
+        let vertex_request = VertexChatRequest::from_chat_request(request, false)?;
         let model_id = vertex_request.model.clone();
         let endpoint = self.get_endpoint(&model_id);
 
@@ -252,7 +252,7 @@ impl LlmProvider for VertexProvider {
 
         request.stream = true;
 
-        let vertex_request = VertexChatRequest::from_chat_request(request)?;
+        let vertex_request = VertexChatRequest::from_chat_request(request, true)?;
         let model_id = vertex_request.model.clone();
         let endpoint = self.get_endpoint(&model_id);
 
@@ -355,7 +355,7 @@ fn is_false(b: &bool) -> bool {
 }
 
 impl VertexChatRequest {
-    pub fn from_chat_request(req: ChatRequest) -> Result<Self> {
+    pub fn from_chat_request(req: ChatRequest, stream: bool) -> Result<Self> {
         let mut system = None;
         let mut messages = Vec::new();
 

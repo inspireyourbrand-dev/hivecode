@@ -16,3 +16,4 @@ uuid = { workspace = true }
 reqwest = { workspace = true }
 futures = { workspace = true }
 tokio-stream = { workspace = true }
+shellexpand = "3"

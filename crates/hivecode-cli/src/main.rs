@@ -253,7 +253,7 @@ async fn main() -> Result<()> {
     };
 
     // Create app state
-    let app_state = AppState::new(config).await?;
+    let app_state = AppState::from_config(config).await?;
 
     // Handle commands
     match args.command {

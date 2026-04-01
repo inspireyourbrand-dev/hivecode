@@ -3,7 +3,9 @@
 //! Initializes the Tauri application, sets up state, registers IPC commands,
 //! and launches the desktop application window.
 
+use hivecode_core::plugins::PluginManager;
 use hivecode_core::state::AppState;
+use hivecode_core::updater::UpdateManager;
 use hivecode_providers::registry::ProviderRegistry;
 use hivecode_security::checker::DefaultPermissionChecker;
 use hivecode_tauri::agent_commands::*;
@@ -86,9 +88,34 @@ pub fn run() {
                 }
             });
 
+            // Initialize update manager
+            let update_manager = UpdateManager::new(env!("CARGO_PKG_VERSION"));
+
+            // Initialize plugin manager
+            let plugin_manager = tauri::async_runtime::block_on(async {
+                match PluginManager::new().await {
+                    Ok(pm) => {
+                        info!("Plugin manager initialized");
+                        pm
+                    }
+                    Err(e) => {
+                        info!("Failed to initialize plugin manager: {}, using empty", e);
+                        // Create a minimal fallback — re-attempt without scanning
+                        PluginManager::empty()
+                    }
+                }
+            });
+
             // Create the unified app state
             let app_state = tauri::async_runtime::block_on(async {
-                TauriAppState::new(core_state, providers, tools, permission_checker).await
+                TauriAppState::new(
+                    core_state,
+                    providers,
+                    tools,
+                    permission_checker,
+                    update_manager,
+                    plugin_manager,
+                ).await
             });
 
             // Manage the state in Tauri

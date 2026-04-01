@@ -183,7 +183,7 @@ impl LlmProvider for AnthropicProvider {
             request.model = self.config.default_model.clone();
         }
 
-        let anthropic_request = AnthropicChatRequest::from_chat_request(request)?;
+        let anthropic_request = AnthropicChatRequest::from_chat_request(request, false)?;
 
         let url = format!("{}/v1/messages", self.get_base_url());
 
@@ -227,7 +227,7 @@ impl LlmProvider for AnthropicProvider {
 
         request.stream = true;
 
-        let anthropic_request = AnthropicChatRequest::from_chat_request(request)?;
+        let anthropic_request = AnthropicChatRequest::from_chat_request(request, true)?;
 
         let url = format!("{}/v1/messages", self.get_base_url());
 

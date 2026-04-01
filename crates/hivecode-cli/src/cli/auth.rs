@@ -4,7 +4,7 @@ use anyhow::Result;
 use colored::*;
 use hivecode_core::AppState;
 
-use crate::main::AuthActions;
+use crate::AuthActions;
 
 pub async fn handle_auth_command(action: AuthActions, _app_state: &AppState) -> Result<()> {
     match action {

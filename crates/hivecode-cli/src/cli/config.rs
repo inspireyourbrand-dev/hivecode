@@ -6,7 +6,7 @@ use colored::*;
 use hivecode_core::HiveConfig;
 use std::path::PathBuf;
 
-use crate::main::ConfigActions;
+use crate::ConfigActions;
 
 pub async fn handle_config_command(action: ConfigActions) -> Result<()> {
     match action {
